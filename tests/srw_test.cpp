@@ -175,7 +175,7 @@ std::string gen_random(const int len) {
     return result;
 }
 
-static void direct_write_test(session &sess)
+static void direct_write_test()
 {
   using namespace cocaine::framework;
 
@@ -207,7 +207,7 @@ bool register_tests(test_suite *suite, node n)
 	ELLIPTICS_TEST_CASE(send_echo, create_session(n, { 1 }, 0, 0), application_name(), "some-data");
 	ELLIPTICS_TEST_CASE(send_echo, create_session(n, { 1 }, 0, 0), application_name(), "some-data and long-data.. like this");
 	ELLIPTICS_TEST_CASE(timeout_test, create_session(n, { 1 }, 0, 0), application_name());
-        ELLIPTICS_TEST_CASE(direct_write_test, create_session(n, { 1 }, 0, 0));
+        ELLIPTICS_TEST_CASE(direct_write_test);
 	return true;
 }
 
