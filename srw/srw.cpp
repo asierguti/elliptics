@@ -40,6 +40,7 @@
 #include <cocaine/api/stream.hpp>
 #include <cocaine/api/service.hpp>
 #include <cocaine/api/storage.hpp>
+#include <cocaine/api/direct_access.hpp>
 
 #include <elliptics/interface.h>
 #include <elliptics/srw.h>
@@ -48,10 +49,16 @@
 #include "cocaine-json-trait.hpp"
 #include "elliptics.h"
 
+#include <cocaine/include/cocaine/services/direct_access.hpp>
+//#include <cocaine/include/cocaine/api/direct_access.hpp>
+#include "cocaine/detail/actor.hpp"
+
 #define SRW_LOG(__log__, __level__, __app__, ...) \
 	BH_LOG((__log__), (__level__), __VA_ARGS__) \
 		("app", (__app__)) \
 		("source", "srw")
+
+//class direct_access_t;
 
 class dnet_upstream_t: public cocaine::api::stream_t
 {
@@ -260,22 +267,27 @@ static dnet_log_level convert_verbosity(cocaine::logging::priorities prio) {
 }
 
 class dnet_sink_t: public cocaine::logging::logger_concept_t {
-	public:
-		dnet_sink_t(struct dnet_node *n) : m_node(n) {
-		}
+public:
+  dnet_sink_t(struct dnet_node *n) : m_node(n) {
+  }
 
-		virtual cocaine::logging::priorities verbosity() const {
-			return convert_verbosity(m_node->log->log().verbosity());
-		}
+  virtual cocaine::logging::priorities verbosity() const {
+    return convert_verbosity(m_node->log->log().verbosity());
+  }
 
-		virtual void emit(cocaine::logging::priorities prio, const std::string &app, const std::string& message) {
-			dnet_log_level level = convert_verbosity(prio);
-			SRW_LOG(*m_node->log, level, app, "%s", message);
-		}
+  virtual void emit(cocaine::logging::priorities prio, const std::string &app, const std::string& message) {
+    dnet_log_level level = convert_verbosity(prio);
+    SRW_LOG(*m_node->log, level, app, "%s", message);
+  }
 
-	private:
-		struct dnet_node *m_node;
+  struct dnet_node *get_node() {
+    return m_node;
+  }
+
+private:
+  struct dnet_node *m_node;
 };
+
 
 class srw {
 	public:
@@ -285,6 +297,14 @@ class srw {
 		{
 			atomic_set(&m_src_key, 1);
 
+			auto reactor = std::make_shared <cocaine::io::reactor_t> ();
+			Json::Value arg;
+
+ 			cocaine::dispatch_t *ptr = new cocaine::service::direct_access_t(m_ctx, *reactor, "direct_access", arg, n);
+			std::unique_ptr<cocaine::dispatch_t> service (ptr);
+
+			m_ctx.attach("direct_access",blackhole::utils::make_unique <cocaine::actor_t>(m_ctx,reactor,
+												      std::move(service)));
 		}
 
 		~srw() {

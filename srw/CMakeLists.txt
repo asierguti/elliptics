@@ -1,6 +1,6 @@
 include_directories(../library)
 
-add_library(elliptics_cocaine STATIC srw.cpp)
+add_library(elliptics_cocaine STATIC srw.cpp module.cpp direct_access.cpp)
 #set_target_properties(elliptics_cocaine PROPERTIES
 #    VERSION ${ELLIPTICS_VERSION}
 #    SOVERSION ${ELLIPTICS_VERSION_ABI}
