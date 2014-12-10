@@ -50,7 +50,6 @@
 #include "elliptics.h"
 
 #include <cocaine/include/cocaine/services/direct_access.hpp>
-//#include <cocaine/include/cocaine/api/direct_access.hpp>
 #include "cocaine/detail/actor.hpp"
 
 #define SRW_LOG(__log__, __level__, __app__, ...) \
@@ -58,7 +57,6 @@
 		("app", (__app__)) \
 		("source", "srw")
 
-//class direct_access_t;
 
 class dnet_upstream_t: public cocaine::api::stream_t
 {
