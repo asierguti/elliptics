@@ -265,27 +265,22 @@ static dnet_log_level convert_verbosity(cocaine::logging::priorities prio) {
 }
 
 class dnet_sink_t: public cocaine::logging::logger_concept_t {
-public:
-  dnet_sink_t(struct dnet_node *n) : m_node(n) {
-  }
+	public:
+		dnet_sink_t(struct dnet_node *n) : m_node(n) {
+		}
 
-  virtual cocaine::logging::priorities verbosity() const {
-    return convert_verbosity(m_node->log->log().verbosity());
-  }
+		virtual cocaine::logging::priorities verbosity() const {
+			return convert_verbosity(m_node->log->log().verbosity());
+		}
 
-  virtual void emit(cocaine::logging::priorities prio, const std::string &app, const std::string& message) {
-    dnet_log_level level = convert_verbosity(prio);
-    SRW_LOG(*m_node->log, level, app, "%s", message);
-  }
+		virtual void emit(cocaine::logging::priorities prio, const std::string &app, const std::string& message) {
+			dnet_log_level level = convert_verbosity(prio);
+			SRW_LOG(*m_node->log, level, app, "%s", message);
+		}
 
-  struct dnet_node *get_node() {
-    return m_node;
-  }
-
-private:
-  struct dnet_node *m_node;
+	private:
+		struct dnet_node *m_node;
 };
-
 
 class srw {
 	public:
