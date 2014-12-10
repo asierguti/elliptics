@@ -2,8 +2,11 @@
 #define SRW_TEST_HPP
 
 #include <cocaine/framework/services/storage.hpp>
+#include <cocaine/framework/services/direct_access.hpp>
 #include <msgpack.hpp>
 #include "test_base.hpp"
+
+#include <stdlib.h> 
 
 #ifndef BOOST_REQUIRE_EQUAL
 # define BOOST_REQUIRE_EQUAL(a, b) do { \
