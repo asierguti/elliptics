@@ -57,7 +57,6 @@
 		("app", (__app__)) \
 		("source", "srw")
 
-
 class dnet_upstream_t: public cocaine::api::stream_t
 {
 	public:
