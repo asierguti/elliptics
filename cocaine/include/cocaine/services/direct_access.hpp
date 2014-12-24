@@ -64,6 +64,8 @@ namespace cocaine { namespace io {
 	  std::string,
 	  uint64_t
 	  > tuple_type;
+
+	typedef dnet_async_service_result result_type;
       };
 
       struct lookup {
@@ -76,6 +78,8 @@ namespace cocaine { namespace io {
         typedef boost::mpl::list<
 	  dnet_id
 	  > tuple_type;
+
+	typedef dnet_async_service_result result_type;
       };
     };
 
@@ -105,14 +109,14 @@ namespace cocaine { namespace io {
     private:
 
       deferred<std::string> read_data(const dnet_id &key, uint64_t offset, uint64_t size);
-      deferred<void> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);
-      deferred<void> lookup(const dnet_id &id);
+      deferred<dnet_async_service_result> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);
+      deferred<dnet_async_service_result> lookup(const dnet_id &id);
 
       void on_read_completed(deferred<std::string> promise,
 			     const std::vector<ioremap::elliptics::read_result_entry> &result,
 			     const ioremap::elliptics::error_info &error);
 
-      void on_write_completed(deferred<void> promise,
+      void on_write_completed(deferred<dnet_async_service_result> promise,
 			const std::vector<ioremap::elliptics::lookup_result_entry> &result,
 			const ioremap::elliptics::error_info &error);
 

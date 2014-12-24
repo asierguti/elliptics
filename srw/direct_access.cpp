@@ -70,24 +70,18 @@ deferred<std::string> direct_access_t::read_data(const dnet_id& key, uint64_t of
   ioremap::elliptics::key k(key);
 
   ioremap::elliptics::session sess (m_node);
-  //  sess.set_exceptions_policy(0x00);
+  sess.set_exceptions_policy(0x00);
   sess.set_groups(m_groups);
 
-  /*  ioremap::elliptics::key key_id = std::string ("test");
-  key_id.transform(sess);
-  dnet_id ke = key_id.id();
-
-  ke.group_id = 1;
-  */
   async_read_result r = sess.read_data (k, offset, size);
   r.connect(std::bind(&direct_access_t::on_read_completed, this, promise, _1, _2));
 
   return promise;
 }
 
-deferred<void> direct_access_t::write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset)
+deferred<dnet_async_service_result> direct_access_t::write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset)
 {
-  deferred<void> promise;
+  deferred<dnet_async_service_result> promise;
 
   ioremap::elliptics::key k(id);
   
@@ -95,22 +89,15 @@ deferred<void> direct_access_t::write_data(const dnet_id &id, const std::string 
   sess.set_exceptions_policy(0x00);
   sess.set_groups(m_groups);
 
-  /*    ioremap::elliptics::key key_id = std::string ("test");
-  key_id.transform(sess);
-  dnet_id ke = key_id.id();
-
-  ke.group_id = 1;
-  */
-
   async_write_result r = sess.write_data (k, file, remote_offset);
   r.connect(std::bind(&direct_access_t::on_write_completed, this, promise, _1, _2));
 
   return promise;
 }
 
-deferred<void> direct_access_t::lookup(const dnet_id &id)
+deferred<dnet_async_service_result> direct_access_t::lookup(const dnet_id &id)
 {
-  deferred<void> promise;
+  deferred<dnet_async_service_result> promise;
 
   ioremap::elliptics::key k(id);
 
@@ -135,13 +122,13 @@ void direct_access_t::on_read_completed(deferred<std::string> promise,
     }
 }
 
-void direct_access_t::on_write_completed(deferred<void> promise,
+void direct_access_t::on_write_completed(deferred<dnet_async_service_result> promise,
 					 const std::vector<ioremap::elliptics::lookup_result_entry> &result,
 					 const ioremap::elliptics::error_info &error)
 {
   if (error) {
     promise.abort(error.code(), error.message());
   } else {
-    promise.close();
+    //    promise.close();
     }
 }

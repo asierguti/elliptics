@@ -43,8 +43,8 @@ namespace cocaine {
     }
 
       deferred<std::string> read_data(const dnet_id &id, uint64_t offset, uint64_t size);
-      deferred<void> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);          
-      deferred<void> lookup(const dnet_id &id);
+      deferred<dnet_async_service_result> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);          
+      deferred<dnet_async_service_result> lookup(const dnet_id &id);
 
     };
   }} // namespace cocaine::api

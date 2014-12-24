@@ -1105,6 +1105,13 @@ static inline void dnet_convert_monitor_stat_request(struct dnet_monitor_stat_re
 	r->categories = dnet_bswap32(r->categories);
 }
 
+struct dnet_async_service_result {
+	struct dnet_addr	addr;		/* filename length, which goes after this structure */
+        struct dnet_file_info   file_info;
+
+        char *file_path;
+};
+
 #ifdef __cplusplus
 }
 #endif

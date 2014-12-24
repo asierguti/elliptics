@@ -58,7 +58,7 @@ namespace cocaine { namespace io {
 	  uint64_t
 	  > tuple_type;
 
-	typedef deferred<void> result_type;
+	typedef deferred<dnet_async_service_result> result_type;
       };
 
       struct lookup {
@@ -72,7 +72,7 @@ namespace cocaine { namespace io {
 	  dnet_id
 	  > tuple_type;
 
-	typedef deferred<void> result_type;
+	typedef deferred<dnet_async_service_result> result_type;
       };
     };
 

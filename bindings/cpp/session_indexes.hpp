@@ -123,6 +123,24 @@ enum find_indexes_result_entry_version : uint16_t {
 	find_indexes_result_entry_version_first = 1
 };
 
+inline dnet_async_service_result &operator >>(msgpack::object o, dnet_async_service_result &v)
+{
+  v.addr >> o;
+  v.file_info >> o;
+  v.file_path >> o
+	
+	return v;
+}
+
+template <typename Stream>
+inline msgpack::packer<Stream> &operator <<(msgpack::packer<Stream> &o, const dnet_async_service_result &v)
+{
+  o << v.addr;
+  o << v.file_info;
+  o << v.file_path;
+	return o;
+}
+
 inline dnet_id &operator >>(msgpack::object o, dnet_id &v)
 {
 	if (o.type != msgpack::type::RAW || o.via.raw.size != sizeof(dnet_id))
