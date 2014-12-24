@@ -22,15 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #ifndef COCAINE_FRAMEWORK_SERVICES_DIRECT_ACCESS_HPP
 #define COCAINE_FRAMEWORK_SERVICES_DIRECT_ACCESS_HPP
 
-					   //#include <cocaine/messages.hpp>
-					   //#include <cocaine/framework/service.hpp>
-					   //#include <cocaine/services/direct_access.hpp>
-					   //#include <cocaine/framework/services/storage.hpp>
-					   //#include <cocaine/services/elliptics_storage.hpp>
-
 #include <cocaine/services/direct_access.hpp>
 #include <cocaine/framework/service.hpp>
-					   //#include <cocaine/traits/dnet_id_trait.hpp>
 #include <bindings/cpp/session_indexes.hpp>
 #include <elliptics/packet.h>
 
