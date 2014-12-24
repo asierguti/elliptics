@@ -1,5 +1,5 @@
 /*
- * 2014+ Copyright (c) Asier Gutierrez <asierguti@gmail.com>
+ * 2014+ Copyright (c) Yandex
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@
  */
 
 #include <cocaine/include/cocaine/services/direct_access.hpp>
-//#include <cocaine/include/cocaine/api/direct_access.hpp>
+#include <cocaine/include/cocaine/api/direct_access.hpp>
 
 #include <memory>
 #include <iostream>
@@ -31,6 +31,8 @@
 #include <elliptics/utils.hpp>
 
 #include "cocaine-json-trait.hpp"
+//#include "dnet_id_trait.hpp"
+#include <bindings/cpp/session_indexes.hpp>
 #include "elliptics.h"
 
 using namespace cocaine;
@@ -56,46 +58,67 @@ direct_access_t::direct_access_t(cocaine::context_t& context, cocaine::io::react
 
   m_groups = std::move(std::vector<int>(groups_set.begin(), groups_set.end()));
 
-  on<cocaine::io::direct_access::read_data>("read_data", std::bind(&direct_access_t::read_data, this, _1, _2, _3, _4));
+  on<cocaine::io::direct_access::read_data>("read_data", std::bind(&direct_access_t::read_data, this, _1, _2, _3));
   on<cocaine::io::direct_access::lookup>("lookup", std::bind(&direct_access_t::lookup, this, _1));
   on<cocaine::io::direct_access::write_data>("write_data", std::bind(&direct_access_t::write_data, this, _1, _2, _3));
 }
 
-deferred<std::string> direct_access_t::read_data(const std::string &id, const std::vector<int> &groups, uint64_t offset, uint64_t size)
+deferred<std::string> direct_access_t::read_data(const dnet_id& key, uint64_t offset, uint64_t size)
 {
   deferred<std::string> promise;
 
-  ioremap::elliptics::session sess (m_node);
+  ioremap::elliptics::key k(key);
 
-  async_read_result r = sess.read_data (id, groups, offset, size);
+  ioremap::elliptics::session sess (m_node);
+  //  sess.set_exceptions_policy(0x00);
+  sess.set_groups(m_groups);
+
+  /*  ioremap::elliptics::key key_id = std::string ("test");
+  key_id.transform(sess);
+  dnet_id ke = key_id.id();
+
+  ke.group_id = 1;
+  */
+  async_read_result r = sess.read_data (k, offset, size);
   r.connect(std::bind(&direct_access_t::on_read_completed, this, promise, _1, _2));
 
   return promise;
 }
 
-deferred<void> direct_access_t::write_data(const std::string &id, const std::string &file, uint64_t remote_offset)
+deferred<void> direct_access_t::write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset)
 {
   deferred<void> promise;
+
+  ioremap::elliptics::key k(id);
   
   ioremap::elliptics::session sess (m_node);
   sess.set_exceptions_policy(0x00);
   sess.set_groups(m_groups);
 
-  async_write_result r = sess.write_data (id, file, remote_offset);
+  /*    ioremap::elliptics::key key_id = std::string ("test");
+  key_id.transform(sess);
+  dnet_id ke = key_id.id();
+
+  ke.group_id = 1;
+  */
+
+  async_write_result r = sess.write_data (k, file, remote_offset);
   r.connect(std::bind(&direct_access_t::on_write_completed, this, promise, _1, _2));
 
   return promise;
 }
 
-deferred<void> direct_access_t::lookup(const std::string &id)
+deferred<void> direct_access_t::lookup(const dnet_id &id)
 {
   deferred<void> promise;
+
+  ioremap::elliptics::key k(id);
 
   ioremap::elliptics::session sess (m_node);
   sess.set_exceptions_policy(0x00);
   sess.set_groups(m_groups);
 
-  auto r = sess.lookup (id);
+  auto r = sess.lookup (k);
   r.connect(std::bind(&direct_access_t::on_write_completed, this, promise, _1, _2));
 
   return promise;

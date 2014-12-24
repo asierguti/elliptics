@@ -30,7 +30,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include <cocaine/services/direct_access.hpp>
 #include <cocaine/framework/service.hpp>
-#include <cocaine/traits/literal.hpp>
+					   //#include <cocaine/traits/dnet_id_trait.hpp>
+#include <bindings/cpp/session_indexes.hpp>
+#include <elliptics/packet.h>
 
 
 namespace cocaine { namespace framework {
@@ -47,16 +49,15 @@ struct direct_access_service_t :
     }
 
     service_traits<cocaine::io::direct_access::read_data>::future_type
-    read_data(const std::string& id,
-	      const std::vector<int> &groups,
+    read_data(const dnet_id& key,
 	      uint64_t offset,
 	      uint64_t size)
     {
-      return call<cocaine::io::direct_access::read_data>(id, groups, offset, size);
+      return call<cocaine::io::direct_access::read_data>(key, offset, size);
     }
 
     service_traits<cocaine::io::direct_access::write_data>::future_type
-    write_data(const std::string& id,
+    write_data(const dnet_id& id,
           const std::string& file,
           uint64_t remote_offset)
     {
@@ -64,7 +65,7 @@ struct direct_access_service_t :
     }
 
     service_traits<cocaine::io::direct_access::lookup>::future_type
-    lookup(const std::string& id)
+    lookup(const dnet_id& id)
     {
         return call<cocaine::io::direct_access::lookup>(id);
     }

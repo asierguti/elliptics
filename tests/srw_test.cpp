@@ -163,19 +163,19 @@ static void timeout_test(session &sess, const std::string &app_name)
 std::string gen_random(const int len) {
     static const char alphanum[] =
         "0123456789"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-      "abcdefghijklmnopqrstuvwxyz";
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		"abcdefghijklmnopqrstuvwxyz";
 
     std::string result;
     result.reserve (len);
 
     for (int i = 0; i < len; ++i) {
-      result += alphanum[rand() % (sizeof(alphanum) - 1)];
+            result += alphanum[rand() % (sizeof(alphanum) - 1)];
     }
     return result;
 }
 
-static void direct_write_test()
+static void direct_write_test(session &sess)
 {
   using namespace cocaine::framework;
 
@@ -183,19 +183,23 @@ static void direct_write_test()
   auto manager = service_manager_t::create(endpoint);
 
   auto direct_access = manager->get_service<cocaine::framework::direct_access_service_t>("direct_access");
+
+  key key_id = std::string (gen_random(8));
+  key_id.transform(sess);
+  dnet_id key = key_id.id();
+
+  key.group_id = 1;
   
-  auto key = gen_random(8);
   auto value = gen_random(15); 
 
-  direct_access->write_data(key, value, 0);
+  direct_access->write_data(key, value, 0).next();
 
   auto g = direct_access->lookup(key);
   g.next();
-  bool found =g.valid();
-
+  bool found = g.valid();
   BOOST_REQUIRE_EQUAL(found, true);
 
-  std::string read_value = direct_access->read_data(key, {1}, 0, 0).next();
+  auto read_value = direct_access->read_data(key, 0, 0).next();
   BOOST_REQUIRE_EQUAL(read_value, value);
 }
 
@@ -207,7 +211,7 @@ bool register_tests(test_suite *suite, node n)
 	ELLIPTICS_TEST_CASE(send_echo, create_session(n, { 1 }, 0, 0), application_name(), "some-data");
 	ELLIPTICS_TEST_CASE(send_echo, create_session(n, { 1 }, 0, 0), application_name(), "some-data and long-data.. like this");
 	ELLIPTICS_TEST_CASE(timeout_test, create_session(n, { 1 }, 0, 0), application_name());
-        ELLIPTICS_TEST_CASE(direct_write_test);
+	ELLIPTICS_TEST_CASE(direct_write_test, create_session(n, { 1 }, 0, 0));
 	return true;
 }
 

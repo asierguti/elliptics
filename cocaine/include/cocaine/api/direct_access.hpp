@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2011-2014 Asier Gutierrez <asierguti@gmail.com>
+    Copyright (c) 2011-2014 Yandex
     Copyright (c) 2011-2014 Other contributors as noted in the AUTHORS file.
 
     This file is part of Cocaine.
@@ -42,9 +42,9 @@ namespace cocaine {
       // Empty.
     }
 
-      deferred<std::string> read_data(const std::string &id, const std::vector<int> &groups, uint64_t offset, uint64_t size);
-      deferred<void> write_data(const std::string &id, const std::string &file, uint64_t remote_offset);          
-      deferred<void> lookup(const std::string &id);
+      deferred<std::string> read_data(const dnet_id &id, uint64_t offset, uint64_t size);
+      deferred<void> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);          
+      deferred<void> lookup(const dnet_id &id);
 
     };
   }} // namespace cocaine::api

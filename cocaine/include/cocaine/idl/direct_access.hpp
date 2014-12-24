@@ -1,5 +1,5 @@
 /*
- * 2014+ Copyright (c) Asier Gutierrez <asierguti@gmail.com>
+ * 2014+ Copyright (c) Yandex
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -37,8 +37,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string,
-	  std::vector<int>,
+	  dnet_id,
 	  uint64_t,
 	  uint64_t
 	  > tuple_type;
@@ -54,7 +53,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string,
+	  dnet_id,
 	  std::string,
 	  uint64_t
 	  > tuple_type;
@@ -70,7 +69,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string
+	  dnet_id
 	  > tuple_type;
 
 	typedef deferred<void> result_type;

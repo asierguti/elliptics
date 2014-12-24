@@ -1,5 +1,5 @@
 /*
- * 2014+ Copyright (c) Asier Gutierrez <asierguti@gmail.com>
+ * 2014+ Copyright (c) Yandex
  * All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -44,8 +44,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string,
-	  std::vector<int>,
+	  dnet_id,
 	  uint64_t,
 	  uint64_t
 	  > tuple_type;
@@ -61,7 +60,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string,
+	  dnet_id,
 	  std::string,
 	  uint64_t
 	  > tuple_type;
@@ -75,7 +74,7 @@ namespace cocaine { namespace io {
         }
 
         typedef boost::mpl::list<
-	  std::string
+	  dnet_id
 	  > tuple_type;
       };
     };
@@ -105,9 +104,9 @@ namespace cocaine { namespace io {
 
     private:
 
-      deferred<std::string> read_data(const std::string &id, const std::vector<int> &groups, uint64_t offset, uint64_t size);
-      deferred<void> write_data(const std::string &id, const std::string &file, uint64_t remote_offset);
-      deferred<void> lookup(const std::string &id);
+      deferred<std::string> read_data(const dnet_id &key, uint64_t offset, uint64_t size);
+      deferred<void> write_data(const dnet_id &id, const std::string &file, uint64_t remote_offset);
+      deferred<void> lookup(const dnet_id &id);
 
       void on_read_completed(deferred<std::string> promise,
 			     const std::vector<ioremap::elliptics::read_result_entry> &result,
